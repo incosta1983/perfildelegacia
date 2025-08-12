@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Perfil - Polícia</title>
+    <!-- Incluindo Tailwind CSS para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilização adicional para a fonte e cores */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+        }
+        .table-header {
+            background-color: #f8fafc; /* slate-50 */
+        }
+        /* Oculta a mensagem de "nenhum resultado" por padrão */
+        #no-results-state {
+            display: none;
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">Visualizador de Perfil - Polícia</h1>
+            <p class="mt-2 text-lg text-slate-600">Use os filtros abaixo para explorar as permissões.</p>
+        </header>
+
+        <main class="max-w-5xl mx-auto">
+            
+            <!-- Card para os filtros -->
+            <div class="card p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="profile-filter" class="block text-lg font-semibold mb-3 text-slate-700">1. Ver por Perfil:</label>
+                        <select id="profile-filter" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            <option value="">-- Selecione um perfil --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="action-filter" class="block text-lg font-semibold mb-3 text-slate-700">OU 2. Ver por Ação:</label>
+                        <select id="action-filter" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                            <option value="">-- Selecione uma ação --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <label for="keyword-search" class="block text-lg font-semibold mb-3 text-slate-700">3. Refinar com Busca:</label>
+                    <input type="text" id="keyword-search" placeholder="Digite uma palavra-chave para filtrar..." class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition">
+                </div>
+            </div>
+
+            <!-- Card para a tabela de resultados -->
+            <div id="results-card" class="card overflow-hidden hidden">
+                <div class="p-6 border-b border-slate-200">
+                     <h2 id="results-title" class="text-2xl font-bold text-slate-800">Resultados</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-sm sm:text-base">
+                        <thead id="table-head" class="table-header">
+                            <!-- Cabeçalho da tabela será inserido aqui -->
+                        </thead>
+                        <tbody id="results-table">
+                            <!-- O conteúdo da tabela será inserido aqui -->
+                            <!-- Estado Inicial -->
+                            <tr id="empty-state">
+                                <td colspan="2" class="text-center p-10">
+                                    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium text-slate-900">Aguardando sua seleção</h3>
+                                    <p class="mt-1 text-sm text-slate-500">Escolha um perfil ou uma ação para começar.</p>
+                                </td>
+                            </tr>
+                            <!-- Estado de Nenhum Resultado -->
+                             <tr id="no-results-state">
+                                <td colspan="2" class="text-center p-10">
+                                    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium text-slate-900">Nenhum resultado encontrado</h3>
+                                    <p class="mt-1 text-sm text-slate-500">Tente ajustar seus filtros ou o termo de busca.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Dados do CSV em formato JSON.
+        const csvData = `Ações;Delegado/Oficial - Chefe;Escrivão/ Encarregado - Chefe;Delegado/Oficial;Escrivão/Encarregado;Perito Criminal Federal
+Cadastra outros usuários;Sim;Sim;Não;Não;Não
+Peticiona inquérito;Não;Não;Sim;Sim;Não
+Peticiona no processo;Sim;Sim;Sim;Sim;Sim
+Gerenciamento da Unidade;Sim;Sim;Não;Não;Não
+Gerenciamento dos processos;Sim - incluindo alocando todos os processos de um usuário para outro;Sim;Sim;Parcial - somente processos alocados para ele;Parcial - somente processos alocados para ele
+Consulta Processual;Sim;Sim;Sim;Sim;Sim
+Movimentação Processual;Sim;Não;Sim;Sim;?
+Cadastro de operações da Policia;Sim;Sim;Sim;Sim;Não
+Redistribui inquerito;Sim;Sim;Não;Não;Não
+Cadastro de permissão/negação expressa;Sim/capa e menu;Sim/na capa;Sim/ na capa;Sim / na capa;Não
+Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatório geral - processos nos quais atua;Somene relatório geral - processos nos quais atua`;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos da página
+            const profileFilter = document.getElementById('profile-filter');
+            const actionFilter = document.getElementById('action-filter');
+            const keywordSearch = document.getElementById('keyword-search');
+            const resultsTable = document.getElementById('results-table');
+            const tableHead = document.getElementById('table-head');
+            const resultsCard = document.getElementById('results-card');
+            const resultsTitle = document.getElementById('results-title');
+            const emptyStateRow = document.getElementById('empty-state');
+            const noResultsRow = document.getElementById('no-results-state');
+
+            // --- 1. Analisar os dados e preparar as estruturas ---
+            const lines = csvData.trim().split('\n');
+            const headers = lines[0].split(';');
+            const profiles = headers.slice(1);
+            const actionsData = [];
+            const actionNames = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(';');
+                const actionName = values[0];
+                actionNames.push(actionName);
+                const action = { name: actionName };
+                for (let j = 1; j < headers.length; j++) {
+                    action[headers[j]] = values[j] || 'Não informado';
+                }
+                actionsData.push(action);
+            }
+
+            // --- 2. Popular os dropdowns de filtros ---
+            profiles.forEach(profile => {
+                const option = document.createElement('option');
+                option.value = profile;
+                option.textContent = profile;
+                profileFilter.appendChild(option);
+            });
+            
+            actionNames.forEach(actionName => {
+                const option = document.createElement('option');
+                option.value = actionName;
+                option.textContent = actionName;
+                actionFilter.appendChild(option);
+            });
+
+            // --- 3. Função central para renderizar a tabela ---
+            function updateView() {
+                const selectedProfile = profileFilter.value;
+                const selectedAction = actionFilter.value;
+                const keyword = keywordSearch.value.toLowerCase();
+
+                // Esconde os estados especiais por padrão
+                emptyStateRow.style.display = 'none';
+                noResultsRow.style.display = 'none';
+                resultsTable.innerHTML = ''; // Limpa a tabela
+
+                if (!selectedProfile && !selectedAction) {
+                    resultsCard.classList.add('hidden');
+                    return;
+                }
+                
+                resultsCard.classList.remove('hidden');
+                let rowsGenerated = 0;
+
+                // MODO 1: Visualização por Perfil
+                if (selectedProfile) {
+                    resultsTitle.textContent = `Ações para: ${selectedProfile}`;
+                    tableHead.innerHTML = `<tr><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Ação</th><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Permissão</th></tr>`;
+
+                    actionsData.forEach(action => {
+                        const permission = action[selectedProfile];
+                        if (action.name.toLowerCase().includes(keyword) || permission.toLowerCase().includes(keyword)) {
+                            const row = createRow(action.name, permission);
+                            resultsTable.appendChild(row);
+                            rowsGenerated++;
+                        }
+                    });
+                } 
+                // MODO 2: Visualização por Ação
+                else if (selectedAction) {
+                    resultsTitle.textContent = `Perfis com a ação: ${selectedAction}`;
+                    tableHead.innerHTML = `<tr><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Perfil</th><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Permissão</th></tr>`;
+
+                    const actionDetails = actionsData.find(a => a.name === selectedAction);
+                    if (actionDetails) {
+                        profiles.forEach(profile => {
+                            const permission = actionDetails[profile];
+                            if (profile.toLowerCase().includes(keyword) || permission.toLowerCase().includes(keyword)) {
+                                const row = createRow(profile, permission);
+                                resultsTable.appendChild(row);
+                                rowsGenerated++;
+                            }
+                        });
+                    }
+                }
+
+                // Mostra a mensagem de "nenhum resultado" se necessário
+                if (rowsGenerated === 0) {
+                    noResultsRow.style.display = 'table-row';
+                }
+            }
+            
+            // --- Função auxiliar para criar linhas da tabela com estilo ---
+            function createRow(cell1Text, cell2Text) {
+                const row = document.createElement('tr');
+                row.classList.add('border-b', 'border-slate-200', 'hover:bg-slate-50');
+
+                const cell1 = document.createElement('td');
+                cell1.textContent = cell1Text;
+                cell1.classList.add('px-6', 'py-4', 'font-medium', 'text-slate-900');
+
+                const cell2 = document.createElement('td');
+                cell2.classList.add('px-6', 'py-4');
+                cell2.innerHTML = formatPermission(cell2Text);
+
+                row.appendChild(cell1);
+                row.appendChild(cell2);
+                return row;
+            }
+
+            // --- Função auxiliar para formatar a célula de permissão ---
+            function formatPermission(permission) {
+                const pLower = permission.toLowerCase();
+                if (pLower.startsWith('sim')) {
+                    return `<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">${permission}</span>`;
+                } else if (pLower === 'não') {
+                    return `<span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">${permission}</span>`;
+                } else if (permission === '?') {
+                    return `<span class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">A definir</span>`;
+                } else {
+                    return `<span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">${permission}</span>`;
+                }
+            }
+
+            // --- 4. Adicionar 'event listeners' para os filtros ---
+            profileFilter.addEventListener('change', function() {
+                if (this.value) {
+                    actionFilter.value = ''; // Reseta o outro filtro
+                }
+                updateView();
+            });
+
+            actionFilter.addEventListener('change', function() {
+                if (this.value) {
+                    profileFilter.value = ''; // Reseta o outro filtro
+                }
+                updateView();
+            });
+
+            keywordSearch.addEventListener('input', updateView);
+
+            // --- Estado inicial da página ---
+            resultsCard.classList.add('hidden');
+            resultsTable.appendChild(emptyStateRow);
+            emptyStateRow.style.display = 'table-row';
+
+        });
+    </script>
+</body>
+</html>
