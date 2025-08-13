@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Perfis Delegacia - Eproc</title>
+    <title>Visualizador de Perfis - Eproc</title>
     <!-- Incluindo Tailwind CSS para estilização -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Incluindo Chart.js para o gráfico -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,7 +21,7 @@
             transition: all 0.3s ease-in-out;
         }
         .table-header {
-            background-color: #f8fafc;
+            background-color: #fef3c7; /* yellow-100 */
         }
     </style>
 </head>
@@ -38,10 +36,10 @@
         <main class="max-w-5xl mx-auto">
             
             <!-- Card de Filtros com Novo Layout -->
-            <div class="card p-6 mb-8 bg-blue-50 border border-blue-200 shadow-lg">
+            <div class="card p-6 mb-8 bg-slate-200 border-2 border-slate-400 shadow-lg">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="profile-filter" class="flex items-center text-lg font-semibold mb-3 text-blue-800">
+                        <label for="profile-filter" class="flex items-center text-lg font-semibold mb-3 text-slate-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                             1. Ver por Perfil:
                         </label>
@@ -50,16 +48,16 @@
                         </select>
                     </div>
                     <div>
-                        <label for="action-filter" class="flex items-center text-lg font-semibold mb-3 text-blue-800">
+                        <label for="action-filter" class="flex items-center text-lg font-semibold mb-3 text-slate-800">
                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                            OU   2. Ver por Funcionalidade do Menu lateral:
+                            2. Funcionalidade do Menu lateral:
                         </label>
                         <select id="action-filter" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                            <option value="">-- Selecione uma ação --</option>
+                            <option value="">-- Selecione uma funcionalidade --</option>
                         </select>
                     </div>
                 </div>
-                <div class="mt-6 border-t border-blue-200 pt-6 text-center">
+                <div class="mt-6 border-t border-slate-300 pt-6 text-center">
                      <button id="clear-filters-btn" class="bg-gradient-to-r from-slate-600 to-slate-800 text-white font-semibold px-6 py-2 rounded-lg hover:from-slate-700 hover:to-slate-900 transition-all shadow-md transform hover:scale-105 flex items-center justify-center mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                         Limpar Filtros
@@ -70,9 +68,9 @@
                 <h3 id="summary-title" class="text-2xl font-bold text-blue-800 mb-3"></h3>
                 <p id="summary-description" class="text-base text-slate-700 leading-relaxed"></p>
             </div>
-            <div id="results-card" class="card overflow-hidden bg-slate-50 shadow-xl mb-8">
-                <div id="results-header" class="p-6 border-b border-slate-200 hidden">
-                     <h2 id="results-title" class="text-2xl font-bold text-slate-800">Resultados</h2>
+            <div id="results-card" class="card overflow-hidden bg-amber-50 shadow-xl mb-8 border border-amber-200">
+                <div id="results-header" class="p-6 border-b border-amber-200 hidden">
+                     <h2 id="results-title" class="text-2xl font-bold text-amber-800">Resultados</h2>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-left text-sm sm:text-base">
@@ -82,7 +80,7 @@
                                 <td colspan="2" class="text-center p-10">
                                     <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                     <h3 class="mt-2 text-sm font-medium text-slate-900">Aguardando sua seleção</h3>
-                                    <p class="mt-1 text-sm text-slate-500">Escolha um perfil ou uma ação para começar.</p>
+                                    <p class="mt-1 text-sm text-slate-500">Escolha um perfil ou uma funcionalidade para começar.</p>
                                 </td>
                             </tr>
                             <tr id="no-results-state" class="hidden">
@@ -94,13 +92,6 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-             <!-- Card do Gráfico -->
-            <div id="chart-card" class="card p-6 hidden bg-white shadow-xl">
-                <h3 id="chart-title" class="text-xl font-bold text-slate-800 mb-4 text-center"></h3>
-                <div class="relative h-64">
-                    <canvas id="permissionsChart"></canvas>
                 </div>
             </div>
         </main>
@@ -133,39 +124,33 @@
             const resultsTable = document.getElementById('results-table');
             const emptyStateRow = document.getElementById('empty-state');
             const noResultsRow = document.getElementById('no-results-state');
-            const chartCard = document.getElementById('chart-card');
-            const chartTitle = document.getElementById('chart-title');
-            const ctx = document.getElementById('permissionsChart').getContext('2d');
-            let permissionsChart = null;
 
-            const csvData = `Ações;Delegado/Oficial - Chefe;Escrivão/ Encarregado - Chefe;Delegado/Oficial;Escrivão/Encarregado;Perito Criminal Federal
-Cadastro de Usuários;Sim;Sim;Não;Não;Não
-Peticionamento em inquérito;Não;Não;Sim;Sim;Não
-Peticionamento intermediário em processos;Sim;Sim;Sim;Sim;Sim
-Gerenciamento da Unidade;Sim;Sim;Não;Não;Não
-Gerenciamento de processos;Sim - incluindo ou alocando todos os processos de um usuário para outro.;Sim;Sim;Parcial - somente processos alocados para ele;Parcial - somente processos alocados para ele
-Consulta Processual;Sim;Sim;Sim;Sim;Sim
-Movimentação Processual;Sim;Não;Sim;Sim;?
-Cadastro de operações da Policia;Sim;Sim;Sim;Sim;Não
-Redistribuição de inquérito;Sim;Sim;Não;Não;Não
-Cadastro de permissão/negação expressa;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo e pelo menu lateral "Permissões Expressas".;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo e pelo menu lateral "Permissões Expressas".;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo e pelo menu lateral "Permissões Expressas".;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo e pelo menu lateral "Permissões Expressas".;Não
-Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatório geral - processos nos quais atua;Somene relatório geral - processos nos quais atua`;
+            const csvData = `Funcionalidades Menu lateral;Delegado/Oficial - Chefe;Escrivão/ Encarregado - Chefe;Delegado/Oficial;Escrivão/Encarregado
+Cadastro de Usuários;Sim;Sim;Não;Não
+Distribuir inquérito (iniciar o peticionamento);Não;Não;Sim;Sim
+Peticionamento intermediário em processos;Sim;Sim;Sim;Sim
+Gerenciamento da Unidade;Sim;Sim;Não;Não
+Gerenciamento de processos;Sim - pode associar, substituir ou excluir o usuário da polícia vinculado ao processo.;Sim - pode associar/ substituir/desativar o usuário da polícia vinculado ao processo.;Sim - pode associar/ substituir/desativar  apenas nos processos em que está vinculado;Sim - pode associar/ substituir/desativar  apenas nos processos em que está vinculado
+Consulta Processual;Sim - nível de sigilo ;Sim;Sim;Sim
+Cadastro de operações da Polícia;Sim;Sim;Sim;Sim
+Redistribuição de inquérito;Sim;Sim;Não;Não
+Cadastro de permissão/negação expressa;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo e pelo menu lateral "Permissões Expressas".;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo.;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo.;Sim - através do botão "Permissão/Negação Expressa" pela capa do processo.
+Relatórios;Sim - todos os processos da entidade;Sim - todos os processos da entidade;Parcial - somente processos nos quais atua;Parcial - somente processos nos quais atua`;
             
             const profileDescriptions = {
               'Delegado/Oficial - Chefe': 'Recebe as citações e é o principal responsável pela Entidade (Unidade Policial) e por todos os seus integrantes. Pode gerenciar todos os processos, usuários e possui a visão mais ampla do sistema.',
               'Escrivão/ Encarregado - Chefe': 'Atua como o principal administrador da unidade. É responsável por cadastrar novos usuários, gerenciar o quadro de servidores na plataforma e organizar o acervo de processos da entidade.',
               'Delegado/Oficial': 'Atua diretamente nos processos judiciais aos quais está formalmente associado, realizando petições e outras movimentações processuais necessárias para o andamento dos inquéritos e procedimentos.',
-              'Escrivão/Encarregado': 'Presta auxílio direto à autoridade policial (Delegado/Oficial) nos processos em que está vinculado, executando tarefas de suporte e movimentação processual sob sua alçada.',
-              'Perito Criminal Federal': 'Perfil essencialmente de consulta. Possui acesso para visualização de processos, mas não detém permissões para cadastro de usuários, gerenciamento de unidades ou peticionamento no sistema.'
+              'Escrivão/Encarregado': 'Presta auxílio direto à autoridade policial (Delegado/Oficial) nos processos em que está vinculado, executando tarefas de suporte e movimentação processual sob sua alçada.'
             };
             const actionDescriptions = {
                 'Cadastro de Usuários': 'Acesso da funcionalidade pelo menu lateral -> usuários: Permite criar novos logins e senhas para outros membros da equipe, definindo seus perfis e permissões de acesso ao sistema eproc. Também é possível reinicializar senha de usuários cadastrados.',
-                'Peticionamento em inquérito': 'Acesso da funcionalidade pelo menu lateral -> Inquérito : Capacidade de interpor diretamente um inquérito policial eletrônico submetendo documentos, manifestações e requerimentos.',
+                'Distribuir inquérito (iniciar o peticionamento)': 'Acesso da funcionalidade pelo menu lateral -> Inquérito : Capacidade de interpor diretamente um inquérito policial eletrônico submetendo documentos, manifestações e requerimentos.',
                 'Peticionamento intermediário em processos': 'Acesso da funcionalidade pelo menu lateral -> Petição/Movimentação : Refere-se à habilidade de protocolar petições e outros documentos em processos judiciais gerais que tramitam no eproc, não se limitando a inquéritos.',
                 'Gerenciamento da Unidade': 'Acesso da funcionalidade pelo menu lateral -> Gerenciamento da Unidade: Funções administrativas sobre a unidade policial no sistema, como a gestão do quadro de usuários (associar/desassociar) e a definição de chefias.',
                 'Gerenciamento de processos': 'Acesso da funcionalidade pelo menu lateral : Controle sobre o fluxo dos processos, incluindo a associação de responsáveis, substituição de usuários em um ou mais casos e a desativação de acesso a processos específicos.',
                 'Consulta Processual': 'Acesso da funcionalidade pelo menu lateral: Acesso à base de dados de processos para busca e visualização de informações, andamentos e documentos, respeitando os níveis de sigilo.',
-                'Cadastro de operações da Policia': 'Acesso da funcionalidade pelo menu lateral -> Operações da Polícia: Permissão para registrar no sistema novas operações policiais, vinculando-as a procedimentos ou inquéritos existentes.',
+                'Cadastro de operações da Polícia': 'Acesso da funcionalidade pelo menu lateral -> Operações da Polícia: Permissão para registrar no sistema novas operações policiais, vinculando-as a procedimentos ou inquéritos existentes.',
                 'Redistribuição de inquérito': 'Acesso da funcionalidade pelo menu lateral -> Ato de transferir um inquérito policial para outra localidade, podendo alterar o rito, classe, assunto, competência.',
                 'Cadastro de permissão/negação expressa': 'Acesso da funcionalidade pelo menu lateral -> Permissões Expressas -> Funcionalidade para conceder ou revogar, de forma individualizada, o acesso de um usuário a um processo ou documento específico, sobrepondo-se às regras gerais de permissão.',
                 'Relatórios': 'Acesso da funcionalidade pelo menu lateral : Habilidade de extrair dados do sistema em formato de relatório, como listas de processos por período, por usuário, ou relatórios de produtividade e movimentação.'
@@ -209,16 +194,10 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
 
                 summaryCard.classList.add('hidden');
                 resultsHeader.classList.add('hidden');
-                chartCard.classList.add('hidden');
                 emptyStateRow.style.display = 'none';
                 noResultsRow.classList.add('hidden');
                 tableHead.innerHTML = '';
                 resultsTable.innerHTML = '';
-
-                if (permissionsChart) {
-                    permissionsChart.destroy();
-                    permissionsChart = null;
-                }
 
                 if (!selectedProfile && !selectedAction) {
                     resultsTable.appendChild(emptyStateRow);
@@ -237,7 +216,7 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
                         summaryCard.classList.remove('hidden');
                     }
                     resultsTitle.textContent = `Permissões Detalhadas para: ${selectedProfile}`;
-                    tableHead.innerHTML = `<tr><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Ação</th><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Permissão</th></tr>`;
+                    tableHead.innerHTML = `<tr><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Funcionalidade</th><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Permissão</th></tr>`;
                     actionsData.forEach(action => {
                         const row = createRow(action.name, action[selectedProfile]);
                         resultsTable.appendChild(row);
@@ -255,23 +234,12 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
                     
                     const actionDetails = actionsData.find(a => a.name === selectedAction);
                     if (actionDetails) {
-                        let simCount = 0, naoCount = 0, parcialCount = 0, outroCount = 0;
-                        
                         profiles.forEach(profile => {
                             const permission = actionDetails[profile];
-                            const pLower = permission ? permission.toLowerCase() : '';
-                            if (pLower.startsWith('sim')) simCount++;
-                            else if (pLower === 'não') naoCount++;
-                            else if (pLower.includes('parcial')) parcialCount++;
-                            else outroCount++;
-
                             const row = createRow(profile, permission);
                             resultsTable.appendChild(row);
                             rowsGenerated++;
                         });
-                        
-                        // Renderiza o gráfico
-                        renderChart(selectedAction, [simCount, naoCount, parcialCount, outroCount]);
                     }
                 }
 
@@ -281,52 +249,6 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
                 }
             }
             
-            function renderChart(action, data) {
-                chartCard.classList.remove('hidden');
-                chartTitle.textContent = `Distribuição de Permissões para: ${action}`;
-
-                permissionsChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Permitido (Sim)', 'Não Permitido', 'Parcial', 'Outro'],
-                        datasets: [{
-                            label: 'Nº de Perfis',
-                            data: data,
-                            backgroundColor: [
-                                'rgba(75, 192, 192, 0.6)',
-                                'rgba(255, 99, 132, 0.6)',
-                                'rgba(255, 159, 64, 0.6)',
-                                'rgba(153, 102, 255, 0.6)'
-                            ],
-                            borderColor: [
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(255, 159, 64, 1)',
-                                'rgba(153, 102, 255, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
-                });
-            }
-
             function createRow(cell1Text, cell2Text) {
                 const row = document.createElement('tr');
                 row.classList.add('border-b', 'border-slate-200', 'hover:bg-slate-50');
