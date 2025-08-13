@@ -6,6 +6,8 @@
     <title>Visualizador e Chatbot - Eproc</title>
     <!-- Incluindo Tailwind CSS para estilização -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Incluindo Chart.js para o gráfico -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -55,6 +57,13 @@
             border-bottom-color: #3b82f6; /* blue-500 */
             color: #1e40af; /* blue-800 */
             font-weight: 600;
+        }
+        .suggestion-btn {
+            transition: all 0.2s ease;
+        }
+        .suggestion-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -109,11 +118,11 @@
                         </button>
                     </div>
                 </div>
-                <div id="summary-card" class="card p-6 mb-8 hidden">
-                    <h3 id="summary-title" class="text-2xl font-bold text-blue-600 mb-3"></h3>
+                <div id="summary-card" class="card p-6 mb-8 hidden bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 shadow-xl">
+                    <h3 id="summary-title" class="text-2xl font-bold text-blue-800 mb-3"></h3>
                     <p id="summary-description" class="text-base text-slate-700 leading-relaxed"></p>
                 </div>
-                <div id="results-card" class="card overflow-hidden">
+                <div id="results-card" class="card overflow-hidden bg-slate-50 shadow-xl mb-8">
                     <div id="results-header" class="p-6 border-b border-slate-200 hidden">
                          <h2 id="results-title" class="text-2xl font-bold text-slate-800">Resultados</h2>
                     </div>
@@ -139,6 +148,13 @@
                         </table>
                     </div>
                 </div>
+                 <!-- Card do Gráfico -->
+                <div id="chart-card" class="card p-6 hidden bg-white shadow-xl">
+                    <h3 id="chart-title" class="text-xl font-bold text-slate-800 mb-4 text-center"></h3>
+                    <div class="relative h-64">
+                        <canvas id="permissionsChart"></canvas>
+                    </div>
+                </div>
             </div>
 
             <!-- Conteúdo do Chatbot -->
@@ -151,6 +167,16 @@
                             <div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
                             <div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
                             <span class="text-sm text-slate-500">Eproc-bot está a digitar...</span>
+                        </div>
+                    </div>
+                    <!-- Sugestões de Perguntas -->
+                    <div id="suggestion-chips" class="px-4 pt-2 pb-4 border-t border-slate-200">
+                        <p class="text-sm font-semibold text-slate-600 mb-2 text-center">Sugestões de tópicos:</p>
+                        <div class="flex flex-wrap gap-2 justify-center">
+                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Perfis de Usuário</button>
+                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Tramitação Direta</button>
+                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Níveis de Sigilo</button>
+                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Bens Apreendidos</button>
                         </div>
                     </div>
                     <div class="p-4 border-t border-slate-200">
@@ -216,6 +242,10 @@
             const resultsTable = document.getElementById('results-table');
             const emptyStateRow = document.getElementById('empty-state');
             const noResultsRow = document.getElementById('no-results-state');
+            const chartCard = document.getElementById('chart-card');
+            const chartTitle = document.getElementById('chart-title');
+            const ctx = document.getElementById('permissionsChart').getContext('2d');
+            let permissionsChart = null;
 
             const csvData = `Ações;Delegado/Oficial - Chefe;Escrivão/ Encarregado - Chefe;Delegado/Oficial;Escrivão/Encarregado;Perito Criminal Federal
 Cadastro de Usuários;Sim;Sim;Não;Não;Não
@@ -289,10 +319,16 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
 
                 summaryCard.classList.add('hidden');
                 resultsHeader.classList.add('hidden');
+                chartCard.classList.add('hidden');
                 emptyStateRow.style.display = 'none';
                 noResultsRow.classList.add('hidden');
                 tableHead.innerHTML = '';
                 resultsTable.innerHTML = '';
+
+                if (permissionsChart) {
+                    permissionsChart.destroy();
+                    permissionsChart = null;
+                }
 
                 if (!selectedProfile && !selectedAction) {
                     resultsTable.appendChild(emptyStateRow);
@@ -326,13 +362,26 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
                     }
                     resultsTitle.textContent = `Perfis com permissão para: ${selectedAction}`;
                     tableHead.innerHTML = `<tr><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Perfil</th><th scope="col" class="px-6 py-4 font-semibold text-slate-900">Permissão</th></tr>`;
+                    
                     const actionDetails = actionsData.find(a => a.name === selectedAction);
                     if (actionDetails) {
+                        let simCount = 0, naoCount = 0, parcialCount = 0, outroCount = 0;
+                        
                         profiles.forEach(profile => {
-                            const row = createRow(profile, actionDetails[profile]);
+                            const permission = actionDetails[profile];
+                            const pLower = permission ? permission.toLowerCase() : '';
+                            if (pLower.startsWith('sim')) simCount++;
+                            else if (pLower === 'não') naoCount++;
+                            else if (pLower.includes('parcial')) parcialCount++;
+                            else outroCount++;
+
+                            const row = createRow(profile, permission);
                             resultsTable.appendChild(row);
                             rowsGenerated++;
                         });
+                        
+                        // Renderiza o gráfico
+                        renderChart(selectedAction, [simCount, naoCount, parcialCount, outroCount]);
                     }
                 }
 
@@ -342,6 +391,52 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
                 }
             }
             
+            function renderChart(action, data) {
+                chartCard.classList.remove('hidden');
+                chartTitle.textContent = `Distribuição de Permissões para: ${action}`;
+
+                permissionsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Permitido (Sim)', 'Não Permitido', 'Parcial', 'Outro'],
+                        datasets: [{
+                            label: 'Nº de Perfis',
+                            data: data,
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.6)',
+                                'rgba(255, 99, 132, 0.6)',
+                                'rgba(255, 159, 64, 0.6)',
+                                'rgba(153, 102, 255, 0.6)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
             function createRow(cell1Text, cell2Text) {
                 const row = document.createElement('tr');
                 row.classList.add('border-b', 'border-slate-200', 'hover:bg-slate-50');
@@ -385,6 +480,7 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
             const userInput = document.getElementById('user-input');
             const sendBtn = document.getElementById('send-btn');
             const typingIndicator = document.getElementById('typing-indicator');
+            const suggestionChips = document.getElementById('suggestion-chips');
 
             const welcomeMessage = 'Olá! Sou o assistente de consulta desse aplicativo. Como posso ajudá-lo hoje? Você pode perguntar sobre perfis, cadastro, intimações, sigilo e outros procedimentos.';
             const errorMessage = 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.';
@@ -503,13 +599,14 @@ Peticionamento em Processos em Andamento: O peticionamento de petições interme
                 }
             }
 
-            async function handleUserMessage() {
-                const userQuery = userInput.value.trim();
+            async function handleUserMessage(query) {
+                const userQuery = query || userInput.value.trim();
                 if (userQuery === '') return;
 
                 addChatMessage(userQuery, 'user');
                 userInput.value = '';
                 typingIndicator.classList.remove('hidden');
+                suggestionChips.classList.add('hidden');
 
                 const botResponse = await getLLMResponse(userQuery);
                 
@@ -517,9 +614,16 @@ Peticionamento em Processos em Andamento: O peticionamento de petições interme
                 addChatMessage(botResponse, 'bot');
             }
 
-            sendBtn.addEventListener('click', handleUserMessage);
+            sendBtn.addEventListener('click', () => handleUserMessage());
             userInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleUserMessage();
+            });
+
+            suggestionChips.addEventListener('click', (e) => {
+                if (e.target.classList.contains('suggestion-btn')) {
+                    const query = `O que são ${e.target.textContent}?`;
+                    handleUserMessage(query);
+                }
             });
 
             // Inicia o chatbot com a mensagem de boas-vindas
