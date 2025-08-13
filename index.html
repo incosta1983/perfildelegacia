@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador e Chatbot - Eproc</title>
+    <title>Visualizador de Perfis Delegacia - Eproc</title>
     <!-- Incluindo Tailwind CSS para estilização -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Incluindo Chart.js para o gráfico -->
@@ -25,172 +25,84 @@
         .table-header {
             background-color: #f8fafc;
         }
-        /* Estilos do Chatbot */
-        #chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 70vh;
-        }
-        #chat-messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-        }
-        #chat-messages::-webkit-scrollbar {
-            width: 8px;
-        }
-        #chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        #chat-messages::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        #chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        /* Estilos para abas de navegação */
-        .nav-button {
-            transition: all 0.2s ease-in-out;
-        }
-        .nav-button.active {
-            border-bottom-color: #3b82f6; /* blue-500 */
-            color: #1e40af; /* blue-800 */
-            font-weight: 600;
-        }
-        .suggestion-btn {
-            transition: all 0.2s ease;
-        }
-        .suggestion-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
     </style>
 </head>
 <body class="antialiased text-slate-800 flex flex-col min-h-screen">
 
     <div class="container mx-auto p-4 flex-grow">
-        <header class="text-center mb-6">
+        <header class="text-center mb-8">
             <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">Ferramenta de Consulta - Perfis de Delegacias no Eproc</h1>
-            <p class="mt-2 text-lg text-slate-600">Navegue entre o Visualizador de Perfis e o Chatbot Assistente.</p>
+            <p class="mt-2 text-lg text-slate-600">Use os filtros abaixo para explorar as permissões e funções.</p>
         </header>
-
-        <!-- Navegação Principal -->
-        <nav class="flex justify-center border-b-2 border-slate-200 mb-8">
-            <button id="nav-visualizer" class="nav-button active text-lg px-6 py-3 border-b-4 border-transparent">
-                Visualizador de Perfis
-            </button>
-            <button id="nav-chatbot" class="nav-button text-lg px-6 py-3 border-b-4 border-transparent">
-                Chatbot Assistente
-            </button>
-        </nav>
 
         <main class="max-w-5xl mx-auto">
             
-            <!-- Conteúdo do Visualizador de Perfis -->
-            <div id="visualizer-content">
-                <!-- Card de Filtros com Novo Layout -->
-                <div class="card p-6 mb-8 bg-blue-50 border border-blue-200 shadow-lg">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="profile-filter" class="flex items-center text-lg font-semibold mb-3 text-blue-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                1. Ver por Perfil:
-                            </label>
-                            <select id="profile-filter" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                                <option value="">-- Selecione um perfil --</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="action-filter" class="flex items-center text-lg font-semibold mb-3 text-blue-800">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                                OU 2. Ver por Ação:
-                            </label>
-                            <select id="action-filter" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                                <option value="">-- Selecione uma ação --</option>
-                            </select>
-                        </div>
+            <!-- Card de Filtros com Novo Layout -->
+            <div class="card p-6 mb-8 bg-blue-50 border border-blue-200 shadow-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="profile-filter" class="flex items-center text-lg font-semibold mb-3 text-blue-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            1. Ver por Perfil:
+                        </label>
+                        <select id="profile-filter" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            <option value="">-- Selecione um perfil --</option>
+                        </select>
                     </div>
-                    <div class="mt-6 border-t border-blue-200 pt-6 text-center">
-                         <button id="clear-filters-btn" class="bg-gradient-to-r from-slate-600 to-slate-800 text-white font-semibold px-6 py-2 rounded-lg hover:from-slate-700 hover:to-slate-900 transition-all shadow-md transform hover:scale-105 flex items-center justify-center mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                            Limpar Filtros
-                        </button>
+                    <div>
+                        <label for="action-filter" class="flex items-center text-lg font-semibold mb-3 text-blue-800">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                            OU   2. Ver por Funcionalidade do Menu lateral:
+                        </label>
+                        <select id="action-filter" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                            <option value="">-- Selecione uma ação --</option>
+                        </select>
                     </div>
                 </div>
-                <div id="summary-card" class="card p-6 mb-8 hidden bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 shadow-xl">
-                    <h3 id="summary-title" class="text-2xl font-bold text-blue-800 mb-3"></h3>
-                    <p id="summary-description" class="text-base text-slate-700 leading-relaxed"></p>
-                </div>
-                <div id="results-card" class="card overflow-hidden bg-slate-50 shadow-xl mb-8">
-                    <div id="results-header" class="p-6 border-b border-slate-200 hidden">
-                         <h2 id="results-title" class="text-2xl font-bold text-slate-800">Resultados</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-left text-sm sm:text-base">
-                            <thead id="table-head" class="table-header"></thead>
-                            <tbody id="results-table">
-                                <tr id="empty-state">
-                                    <td colspan="2" class="text-center p-10">
-                                        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                                        <h3 class="mt-2 text-sm font-medium text-slate-900">Aguardando sua seleção</h3>
-                                        <p class="mt-1 text-sm text-slate-500">Escolha um perfil ou uma ação para começar.</p>
-                                    </td>
-                                </tr>
-                                <tr id="no-results-state" class="hidden">
-                                    <td colspan="2" class="text-center p-10">
-                                        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        <h3 class="mt-2 text-sm font-medium text-slate-900">Nenhum resultado encontrado</h3>
-                                        <p class="mt-1 text-sm text-slate-500">Tente ajustar seus filtros.</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                 <!-- Card do Gráfico -->
-                <div id="chart-card" class="card p-6 hidden bg-white shadow-xl">
-                    <h3 id="chart-title" class="text-xl font-bold text-slate-800 mb-4 text-center"></h3>
-                    <div class="relative h-64">
-                        <canvas id="permissionsChart"></canvas>
-                    </div>
+                <div class="mt-6 border-t border-blue-200 pt-6 text-center">
+                     <button id="clear-filters-btn" class="bg-gradient-to-r from-slate-600 to-slate-800 text-white font-semibold px-6 py-2 rounded-lg hover:from-slate-700 hover:to-slate-900 transition-all shadow-md transform hover:scale-105 flex items-center justify-center mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        Limpar Filtros
+                    </button>
                 </div>
             </div>
-
-            <!-- Conteúdo do Chatbot -->
-            <div id="chatbot-content" class="hidden">
-                 <div id="chat-container" class="bg-white rounded-xl shadow-lg w-full max-w-4xl mx-auto">
-                    <div id="chat-messages" class="p-6 space-y-4"></div>
-                    <div id="typing-indicator" class="px-6 pb-2 hidden">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
-                            <div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
-                            <div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
-                            <span class="text-sm text-slate-500">Eproc-bot está a digitar...</span>
-                        </div>
-                    </div>
-                    <!-- Sugestões de Perguntas -->
-                    <div id="suggestion-chips" class="px-4 pt-2 pb-4 border-t border-slate-200">
-                        <p class="text-sm font-semibold text-slate-600 mb-2 text-center">Sugestões de tópicos:</p>
-                        <div class="flex flex-wrap gap-2 justify-center">
-                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Perfis de Usuário</button>
-                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Tramitação Direta</button>
-                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Níveis de Sigilo</button>
-                            <button class="suggestion-btn bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Bens Apreendidos</button>
-                        </div>
-                    </div>
-                    <div class="p-4 border-t border-slate-200">
-                        <div class="flex items-center space-x-3">
-                            <input type="text" id="user-input" placeholder="Digite a sua pergunta aqui..." class="flex-grow p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                            <button id="send-btn" class="bg-blue-600 text-white font-semibold px-5 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                                Enviar
-                            </button>
-                        </div>
-                    </div>
+            <div id="summary-card" class="card p-6 mb-8 hidden bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 shadow-xl">
+                <h3 id="summary-title" class="text-2xl font-bold text-blue-800 mb-3"></h3>
+                <p id="summary-description" class="text-base text-slate-700 leading-relaxed"></p>
+            </div>
+            <div id="results-card" class="card overflow-hidden bg-slate-50 shadow-xl mb-8">
+                <div id="results-header" class="p-6 border-b border-slate-200 hidden">
+                     <h2 id="results-title" class="text-2xl font-bold text-slate-800">Resultados</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-sm sm:text-base">
+                        <thead id="table-head" class="table-header"></thead>
+                        <tbody id="results-table">
+                            <tr id="empty-state">
+                                <td colspan="2" class="text-center p-10">
+                                    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    <h3 class="mt-2 text-sm font-medium text-slate-900">Aguardando sua seleção</h3>
+                                    <p class="mt-1 text-sm text-slate-500">Escolha um perfil ou uma ação para começar.</p>
+                                </td>
+                            </tr>
+                            <tr id="no-results-state" class="hidden">
+                                <td colspan="2" class="text-center p-10">
+                                    <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <h3 class="mt-2 text-sm font-medium text-slate-900">Nenhum resultado encontrado</h3>
+                                    <p class="mt-1 text-sm text-slate-500">Tente ajustar seus filtros.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
+             <!-- Card do Gráfico -->
+            <div id="chart-card" class="card p-6 hidden bg-white shadow-xl">
+                <h3 id="chart-title" class="text-xl font-bold text-slate-800 mb-4 text-center"></h3>
+                <div class="relative h-64">
+                    <canvas id="permissionsChart"></canvas>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -207,27 +119,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // --- LÓGICA DE NAVEGAÇÃO ENTRE ABAS ---
-            const navVisualizer = document.getElementById('nav-visualizer');
-            const navChatbot = document.getElementById('nav-chatbot');
-            const visualizerContent = document.getElementById('visualizer-content');
-            const chatbotContent = document.getElementById('chatbot-content');
-
-            navVisualizer.addEventListener('click', () => {
-                visualizerContent.classList.remove('hidden');
-                chatbotContent.classList.add('hidden');
-                navVisualizer.classList.add('active');
-                navChatbot.classList.remove('active');
-            });
-
-            navChatbot.addEventListener('click', () => {
-                visualizerContent.classList.add('hidden');
-                chatbotContent.classList.remove('hidden');
-                navVisualizer.classList.remove('active');
-                navChatbot.classList.add('active');
-            });
-
-
             // --- LÓGICA DO VISUALIZADOR DE PERFIS ---
             const profileFilter = document.getElementById('profile-filter');
             const actionFilter = document.getElementById('action-filter');
@@ -268,17 +159,16 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
               'Perito Criminal Federal': 'Perfil essencialmente de consulta. Possui acesso para visualização de processos, mas não detém permissões para cadastro de usuários, gerenciamento de unidades ou peticionamento no sistema.'
             };
             const actionDescriptions = {
-                'Cadastro de Usuários': 'Permite criar novos logins e senhas para outros membros da equipe, definindo seus perfis e permissões de acesso ao sistema eproc. Também é possível reinicializar senha de usuários cadastrados.',
-                'Peticionamento em inquérito': 'Capacidade de submeter documentos, manifestações e requerimentos diretamente nos autos de um inquérito policial eletrônico.',
-                'Peticionamento intermediário em processos': 'Refere-se à habilidade de protocolar petições e outros documentos em processos judiciais gerais que tramitam no eproc, não se limitando a inquéritos.',
-                'Gerenciamento da Unidade': 'Funções administrativas sobre a unidade policial no sistema, como a gestão do quadro de usuários (associar/desassociar) e a definição de chefias.',
-                'Gerenciamento de processos': 'Controle sobre o fluxo dos processos, incluindo a associação de responsáveis, substituição de usuários em um ou mais casos e a desativação de acesso a processos específicos.',
-                'Consulta Processual': 'Acesso à base de dados de processos para busca e visualização de informações, andamentos e documentos, respeitando os níveis de sigilo.',
-                'Movimentação Processual': 'Execução de atos que impulsionam o processo, como o envio para outras instâncias, resposta a ofícios ou o cumprimento de determinações judiciais.',
-                'Cadastro de operações da Policia': 'Permissão para registrar no sistema novas operações policiais, vinculando-as a procedimentos ou inquéritos existentes.',
-                'Redistribuição de inquérito': 'Ato de transferir a responsabilidade de um inquérito policial de um usuário ou setor para outro dentro da mesma entidade ou para outra localidade.',
-                'Cadastro de permissão/negação expressa': 'Funcionalidade para conceder ou revogar, de forma individualizada, o acesso de um usuário a um processo ou documento específico, sobrepondo-se às regras gerais de permissão.',
-                'Relatórios': 'Habilidade de extrair dados do sistema em formato de relatório, como listas de processos por período, por usuário, ou relatórios de produtividade e movimentação.'
+                'Cadastro de Usuários': 'Acesso da funcionalidade pelo menu lateral -> usuários: Permite criar novos logins e senhas para outros membros da equipe, definindo seus perfis e permissões de acesso ao sistema eproc. Também é possível reinicializar senha de usuários cadastrados.',
+                'Peticionamento em inquérito': 'Acesso da funcionalidade pelo menu lateral -> Inquérito : Capacidade de interpor diretamente um inquérito policial eletrônico submetendo documentos, manifestações e requerimentos.',
+                'Peticionamento intermediário em processos': 'Acesso da funcionalidade pelo menu lateral -> Petição/Movimentação : Refere-se à habilidade de protocolar petições e outros documentos em processos judiciais gerais que tramitam no eproc, não se limitando a inquéritos.',
+                'Gerenciamento da Unidade': 'Acesso da funcionalidade pelo menu lateral -> Gerenciamento da Unidade: Funções administrativas sobre a unidade policial no sistema, como a gestão do quadro de usuários (associar/desassociar) e a definição de chefias.',
+                'Gerenciamento de processos': 'Acesso da funcionalidade pelo menu lateral : Controle sobre o fluxo dos processos, incluindo a associação de responsáveis, substituição de usuários em um ou mais casos e a desativação de acesso a processos específicos.',
+                'Consulta Processual': 'Acesso da funcionalidade pelo menu lateral: Acesso à base de dados de processos para busca e visualização de informações, andamentos e documentos, respeitando os níveis de sigilo.',
+                'Cadastro de operações da Policia': 'Acesso da funcionalidade pelo menu lateral -> Operações da Polícia: Permissão para registrar no sistema novas operações policiais, vinculando-as a procedimentos ou inquéritos existentes.',
+                'Redistribuição de inquérito': 'Acesso da funcionalidade pelo menu lateral -> Ato de transferir a responsabilidade de um inquérito policial de um usuário ou setor para outro dentro da mesma entidade ou para outra localidade.',
+                'Cadastro de permissão/negação expressa': 'Acesso da funcionalidade pelo menu lateral -> Permissões Expressas -> Funcionalidade para conceder ou revogar, de forma individualizada, o acesso de um usuário a um processo ou documento específico, sobrepondo-se às regras gerais de permissão.',
+                'Relatórios': 'Acesso da funcionalidade pelo menu lateral : Habilidade de extrair dados do sistema em formato de relatório, como listas de processos por período, por usuário, ou relatórios de produtividade e movimentação.'
             };
 
             const lines = csvData.trim().split('\n');
@@ -474,160 +364,6 @@ Relatórios;Sim;Sim;Parcial - somente processos nos quais atua;Somente relatóri
             });
             updateVisualizerView();
 
-
-            // --- LÓGICA DO CHATBOT ---
-            const chatMessages = document.getElementById('chat-messages');
-            const userInput = document.getElementById('user-input');
-            const sendBtn = document.getElementById('send-btn');
-            const typingIndicator = document.getElementById('typing-indicator');
-            const suggestionChips = document.getElementById('suggestion-chips');
-
-            const welcomeMessage = 'Olá! Sou o assistente de consulta desse aplicativo. Como posso ajudá-lo hoje? Você pode perguntar sobre perfis, cadastro, intimações, sigilo e outros procedimentos.';
-            const errorMessage = 'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.';
-            
-            const contexto_pdfs = `Este resumo foi elaborado para orientar novos usuários no sistema eproc, especialmente servidores da Polícia Civil e Polícia Militar, destacando as funcionalidades e procedimentos essenciais para a utilização eficiente da plataforma.
-
-Introdução ao Sistema eproc
-O eproc é um sistema eletrônico que serve como uma ferramenta para simplificar a utilização e otimizar a eficiência no desempenho das atividades da Polícia Civil e Polícia Militar. Ele foi desenvolvido para gerenciar inquéritos policiais e Termos Circunstanciados (TCs), garantindo uma comunicação clara e ágil entre a Autoridade Policial, o Ministério Público e o Judiciário. As "Polícias" são cadastradas no sistema como Entidades, consideradas parte do público interno.
-
-Perfis de Usuários e Acesso
-No eproc, existem diversos perfis de usuários, cada um com tarefas específicas:
-
-Delegado-Chefe (PC) e Oficial-Chefe (PM): Recebe citações e é responsável pela Entidade e seus integrantes. O primeiro cadastro desses perfis é feito pela Corregedoria Geral da Justiça, e cada Entidade deve ter pelo menos um Delegado-Chefe/Oficial-Chefe por comarca.
-Delegado (PC) e Oficial (PM): Atua nos processos da Entidade aos quais esteja associado.
-Escrivão-Chefe (PC) e Encarregado-Chefe (PM): Cadastra usuários, gerencia o quadro de usuários da entidade e o acervo de processos. Eles podem desempenhar a tarefa de cadastro e gerenciamento no lugar do Delegado-Chefe/Oficial-Chefe e são responsáveis pelo cadastro do Delegado-Chefe/Oficial-Chefe em caso de nova designação.
-Escrivão (PC) e Encarregado (PM): Auxilia a autoridade nos processos da Entidade aos quais esteja associado.
-Para acessar o sistema, o eproc é uma aplicação web, que pode ser acessada por meio de um navegador de internet (como Edge, Google Chrome, Internet Explorer) sem a necessidade de downloads ou instalações. Após o cadastro, o usuário pode acessar inserindo seu login e senha ou utilizando seu certificado digital. O campo "Usuário" não diferencia maiúsculas ou minúsculas, mas o campo "Senha" sim.
-
-Autenticação em Dois Fatores (2FA)
-A autenticação em dois fatores é um mecanismo de segurança obrigatório para todos os usuários do eproc.
-
-Como ativar: Instale um aplicativo de autenticação (ex: Microsoft Authenticator, Twilio Authy) no smartphone. No sistema eproc, clique em "Autenticação em dois fatores", depois em "Prosseguir" e leia o código QR com o aplicativo. Se estiver no celular, clique no código alfanumérico abaixo do QR para copiá-lo e adicioná-lo no aplicativo. Insira o código gerado no aplicativo no eproc, informe o e-mail e clique em "Enviar". Um link de ativação será enviado para o e-mail, que deve ser aberto para confirmar a ativação no aplicativo.
-Acesso com 2FA: Após a ativação, nos próximos acessos, o sistema solicitará um código numérico de 6 dígitos. Abra o aplicativo de autenticação no smartphone, anote o código e insira-o na tela do sistema.
-Liberação de dispositivos: Para dispositivos usados com frequência, você pode marcar a opção "Não usar o 2FA neste dispositivo e navegador" na tela de solicitação do código numérico. Essa funcionalidade não estará disponível em janelas anônimas ou privativas.
-Desativação: Se houver problemas (perda do aparelho, erro no aplicativo), o 2FA pode ser desativado na mesma tela de solicitação do código ou via link "Autenticação em 2 fatores" na tela inicial de login, clicando em "Desativar 2FA". Um e-mail com um link de desativação será enviado.
-Gestão de Inquéritos e Termos Circunstanciados (Tramitação Direta)
-O eproc permite a gestão eficiente de inquéritos policiais e TCs, facilitando o fluxo de informações e o acompanhamento dos procedimentos investigativos.
-
-Inquéritos Policiais (IPs) e Termos Circunstanciados (TCs): Podem ser cadastrados como petição inicial, anexando todas as provas (físicas ou eletrônicas). A movimentação processual ocorre principalmente entre os painéis da Polícia e do Ministério Público.IPs: O Delegado da Polícia cadastra o IP-Portaria, e o sistema o distribui para a vara competente, incluindo automaticamente o evento que o encaminha ao Painel da Autoridade Policial.
-TCs: A Autoridade Policial cadastra o TC, e o sistema o distribui para a Unidade Judicial competente. O TC não é enviado diretamente para o Painel da Autoridade Policial, mas pode ser direcionado para a Tramitação Direta pela Unidade Judicial, onde a comunicação ocorrerá entre a Autoridade Policial e o Ministério Público.
-Caminho no Painel da Polícia: Após o cadastro, o procedimento é alocado no localizador "Aviso de Inquérito colocado em Tramitação Direta".
-Impulso do Processo: Após o processo estar disponível, a Polícia deve lançar um evento posterior (impulso).
-Comunicação Polícia e Ministério Público: A Polícia pode encaminhar diretamente ao MP os seguintes pedidos:Pedido de Dilação de Prazo: Usado quando a investigação necessita de prorrogação. O processo é encaminhado ao Painel do Promotor, ficando no localizador "Pedidos de Dilação de Prazo Pendentes" no Painel da Polícia. Pode ser reiterado várias vezes.
-Relatório Final: Usado para concluir o inquérito, pode ser usado apenas uma vez por processo. Não altera o localizador no Painel da Polícia. O MP pode oferecer denúncia, pedir declinação de competência, arquivamento, ou requisitar diligência.
-Diligência cumprida cota/MP: Usado para responder a requisições de diligência do MP.
-Apreciação MP: Usado quando a Polícia precisa da resposta do Promotor sobre a investigação, sem se enquadrar nas hipóteses anteriores. Os pedidos ficam em "Pedidos Pendentes" ou "Pedidos Respondidos" na seção "Apreciação MPSC".
-Comunicação Autoridade Policial e Poder Judiciário: A Polícia pode encaminhar processos ao Judiciário usando o evento "Apreciação Judicial". O processo é devolvido ao localizador "Aviso de Inquérito colocado em Tramitação Direta" após a análise da vara.
-Pedidos de Advogados e Sigilo Processual
-Acesso de Advogados: Advogados/defensores podem acessar processos cadastrados pela Polícia com nível de sigilo zero. Com sigilo nível um, conseguem visualizar partes e eventos, mas não documentos. A partir do nível dois, não há acesso a dados do processo sem permissão expressa.
-Cadastro de Advogados: É responsabilidade da delegacia vincular o advogado ao processo. Acesse o processo, procure por "Associar Procurador Parte", selecione a parte e clique no sinal de "+" e "Confirmar Associação".
-Níveis de Sigilo: O eproc possui 5 níveis de sigilo:Nível zero (sem sigilo): Acesso total para usuários internos e externos vinculados; consulta pública acessa informações e documentos decisórios.
-Nível um (Segredo de Justiça): Acesso total para usuários internos e externos vinculados (exceto assistentes); usuários externos não vinculados acessam detalhes, mas não documentos. Consulta pública oculta informações, mas exibe conteúdo completo com chave.
-Nível dois (Sigilo interno 2): Usado para pedidos cautelares. Usuários internos têm acesso (estagiários não); Polícias e MP vinculados têm acesso, advogados precisam de permissão expressa. "Processo sigiloso" para não vinculados e consulta pública.
-Nível três (Sigilo interno 3): Preferencialmente para proteger informações pessoais ou mídias. Usuários internos acessam apenas processos da sua unidade; externos só com permissão expressa. "Processo sigiloso" para consulta pública.
-Nível quatro (Sigilo interno 4): Para proteger informações pessoais/imagens constrangedoras. Somente Magistrado e Chefe de Cartório da unidade têm acesso.
-Nível cinco (Sigilo interno 5): O mais rigoroso, para casos excepcionais como quebras de sigilo. Não deve ser aplicado a processos principais (ex: inquérito). Apenas o Juiz do processo tem acesso aos dados e documentos; outros usuários internos e externos só com permissão expressa. "Processo não encontrado" para consulta pública. Delegado ou Promotor que propôs a medida tem acesso imediato.
-Gerenciamento de Processos (Interno)
-Além de gerenciar usuários, perfis como Delegado-Chefe, Oficial-Chefe, Escrivão-Chefe e Encarregado-Chefe podem gerenciar todos os processos vinculados à Entidade. Há duas regras básicas: nenhum processo pode ficar sem usuário associado e cada usuário só gerencia processos em que está habilitado, exceto os perfis de chefia que gerenciam qualquer processo. Todo gerenciamento cria um log de registro.
-
-Gerenciamento em Bloco (Meus Processos): Disponível para todos os perfis. Permite gerenciar processos atribuídos ao próprio usuário. Pode-se Substituir procurador (exclui o atual e inclui outro), Associar procurador (mantém o atual e adiciona outro), ou Desativar procurador (exclui o atual, se não for o único).
-Gerenciamento em Bloco da Unidade: Disponível apenas para Delegado-Chefe, Oficial-Chefe, Escrivão-Chefe e Encarregado-Chefe. Permite alterar processos de outros usuários em bloco.
-Gerenciamento Individual: Disponível para todos os perfis. Permite gerenciar um processo específico, inclusive buscando pelo número.
-Substituição de Usuários (Todos Processos): Disponível apenas para Delegado-Chefe e Oficial-Chefe. Permite substituir um usuário em todos os processos associados em uma determinada localidade.
-Consultar histórico: Para verificar o histórico de gerenciamento de usuários em um processo, clique no ícone "Histórico de representantes" na capa do processo.
-Consulta Processual e Relatórios
-Consulta Processual: Pode ser realizada de três formas: inserindo o número do processo no campo de pesquisa, pelo menu "Consulta Processual > Consultar Processos" com vários filtros (número, nome da parte, CPF/CNPJ, OAB, etc.), ou pelo menu "Relatórios > Relação de Processos", que exibe apenas os processos vinculados ao usuário.
-Extração de Relatórios: O eproc permite extrair relatórios dos processos vinculados ao usuário. Exemplos incluem:Processos sem Movimentação nos Últimos N Dias.
-Relatório Geral: Abrange processos sem movimentação com mais opções de filtro.
-Relatório da Movimentação por dia/período.
-Bens Associados Pendentes de Cadastro e Pedido de Destinação de Bens
-Ao iniciar um inquérito, as Polícias devem indicar a existência de bens apreendidos ainda não restituídos. Se "SIM", o sistema aplica automaticamente a tarja "Bem Associado Pendente de Cadastro" e insere o processo no localizador "Bens a Cadastrar". Processos com essa tarja ativa não podem ser arquivados.
-Foi criado o evento "Pedido de Destinação de Bem" para solicitar a destinação de bens sob custódia, que também pode ativar a tarja se não houver bens cadastrados.
-A tarja é desativada após o correto cadastro dos bens no módulo de bens apreendidos e a seleção de "NÃO" no campo "Bem Associado Pendente de Cadastro" nas Informações Adicionais do processo.
-
-Recebimento de Intimações / Peticionamentos de Intermediárias
-Recebimento de Intimações: As comunicações judiciais são alocadas nos localizadores "Citações/Intimações" e "Processos pendentes de citação/intimação" no Painel da Polícia. O prazo fixado pelo juiz é aberto oficialmente ao clicar em "Abrir prazo" na lista de processos ou automaticamente após 10 dias corridos.
-Resposta a Intimações/Citações: Na capa do processo, clique em "Movimentar/peticionar" e escolha o evento apropriado, anexando o documento (ex: ofício, petição, mídias). Se a petição encerrar o prazo, o processo sairá do Painel da Polícia.
-Intimação sem Resposta Escrita: Se não for necessária resposta escrita (ex: requisição para audiência), a Polícia pode encerrar o prazo utilizando o evento "Ciência, com renúncia ao prazo", sem anexar documentos.
-Peticionamento em Processos em Andamento: O peticionamento de petições intermediárias é livre para processos já no eproc, mesmo sem prazo judicial aberto, desde que a Entidade esteja associada ao processo ou o sigilo não seja superior ao nível dois para processos não iniciados pela Entidade.`;
-
-            function addChatMessage(message, sender) {
-                const messageDiv = document.createElement('div');
-                const bubbleDiv = document.createElement('div');
-                bubbleDiv.innerHTML = message; // Usar innerHTML para renderizar o negrito
-                bubbleDiv.classList.add('p-3', 'rounded-xl', 'max-w-lg');
-                if (sender === 'user') {
-                    messageDiv.classList.add('flex', 'justify-end');
-                    bubbleDiv.classList.add('bg-blue-500', 'text-white');
-                } else {
-                    messageDiv.classList.add('flex', 'justify-start');
-                    bubbleDiv.classList.add('bg-slate-200', 'text-slate-800');
-                }
-                messageDiv.appendChild(bubbleDiv);
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            async function getLLMResponse(userQuery) {
-                const prompt = `Você é um assistente especializado no sistema Eproc para a polícia. Responda a pergunta do usuário de forma clara e objetiva, baseando-se exclusivamente no seguinte contexto dos manuais. Se a resposta não estiver no contexto, diga que não encontrou a informação. Responda em português do Brasil.\n\n--- CONTEXTO ---\n${contexto_pdfs}\n\n--- PERGUNTA ---\n${userQuery}`;
-                
-                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-                const payload = { contents: chatHistory };
-                const apiKey = ""; 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const result = await response.json();
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        return result.candidates[0].content.parts[0].text;
-                    } else {
-                        return "Não consegui gerar uma resposta. A estrutura do retorno foi inesperada.";
-                    }
-                } catch (error) {
-                    console.error("Error calling LLM API:", error);
-                    return errorMessage;
-                }
-            }
-
-            async function handleUserMessage(query) {
-                const userQuery = query || userInput.value.trim();
-                if (userQuery === '') return;
-
-                addChatMessage(userQuery, 'user');
-                userInput.value = '';
-                typingIndicator.classList.remove('hidden');
-                suggestionChips.classList.add('hidden');
-
-                const botResponse = await getLLMResponse(userQuery);
-                
-                typingIndicator.classList.add('hidden');
-                addChatMessage(botResponse, 'bot');
-            }
-
-            sendBtn.addEventListener('click', () => handleUserMessage());
-            userInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleUserMessage();
-            });
-
-            suggestionChips.addEventListener('click', (e) => {
-                if (e.target.classList.contains('suggestion-btn')) {
-                    const query = `O que são ${e.target.textContent}?`;
-                    handleUserMessage(query);
-                }
-            });
-
-            // Inicia o chatbot com a mensagem de boas-vindas
-            addChatMessage(welcomeMessage, 'bot');
         });
     </script>
 </body>
